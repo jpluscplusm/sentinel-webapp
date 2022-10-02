@@ -10,6 +10,7 @@ _python_version: string @tag(python_version)
 jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
+		name:      "Unit & integration test branch '${{github.ref_name}}'"
 		steps: [
 			{
 				uses: "actions/checkout@v3"
