@@ -7,25 +7,29 @@ on: {
 
 _python_version: string @tag(python_version)
 
+_prepare_venv_steps: [
+	{
+		uses: "actions/checkout@v3"
+	}, {
+		name: "Install poetry"
+		run:  "pipx install poetry"
+	}, {
+		uses: "actions/setup-python@v4"
+		with: {
+			"python-version": _python_version
+			cache:            "poetry"
+		}
+	}, {
+		run: "make dependencies"
+	},
+]
+
 jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
 		name:      "Test '${{github.ref_name}}'"
-		steps: [
-			{
-				uses: "actions/checkout@v3"
-			}, {
-				name: "Install poetry"
-				run:  "pipx install poetry"
-			}, {
-				uses: "actions/setup-python@v4"
-				with: {
-					"python-version": _python_version
-					cache:            "poetry"
-				}
-			}, {
-				run: "make dependencies"
-			}, {
+		steps:     _prepare_venv_steps + [
+				{
 				run: "make unit"
 			}, {
 				run: "make integration"
@@ -55,19 +59,8 @@ jobs: {
 		needs:     "deploy"
 		"runs-on": "ubuntu-latest"
 		name:      "Regression test '${{github.ref_name}}' deployment"
-		steps: [
-			{
-				uses: "actions/checkout@v3"
-			}, {
-				name: "Install poetry"
-				run:  "pipx install poetry"
-			}, {
-				uses: "actions/setup-python@v4"
-				with: {
-					"python-version": _python_version
-					cache:            "poetry"
-				}
-			}, {
+		steps:     _prepare_venv_steps + [
+				{
 				env: BASE_URL: "https://st1-app-main.herokuapp.com"
 				run: "make regression"
 			},
@@ -94,19 +87,8 @@ jobs: {
 		needs:     "promote_to_staging"
 		"runs-on": "ubuntu-latest"
 		name:      "Regression test Staging deployment"
-		steps: [
-			{
-				uses: "actions/checkout@v3"
-			}, {
-				name: "Install poetry"
-				run:  "pipx install poetry"
-			}, {
-				uses: "actions/setup-python@v4"
-				with: {
-					"python-version": _python_version
-					cache:            "poetry"
-				}
-			}, {
+		steps:     _prepare_venv_steps + [
+				{
 				env: BASE_URL: "https://st1-app-staging.herokuapp.com"
 				run: "make regression"
 			},

@@ -47,6 +47,7 @@ jobs:
         with:
           python-version: 3.10.7
           cache: poetry
+      - run: make dependencies
       - env:
           BASE_URL: https://st1-app-main.herokuapp.com
         run: make regression
@@ -75,6 +76,7 @@ jobs:
         with:
           python-version: 3.10.7
           cache: poetry
+      - run: make dependencies
       - env:
           BASE_URL: https://st1-app-staging.herokuapp.com
         run: make regression
