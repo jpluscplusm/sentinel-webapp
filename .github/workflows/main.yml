@@ -20,6 +20,7 @@ jobs:
           cache: poetry
       - run: make dependencies
       - run: make unit
+      - run: make coverage
       - run: make integration
   deploy:
     needs: test

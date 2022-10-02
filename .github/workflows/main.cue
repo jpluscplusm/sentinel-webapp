@@ -11,13 +11,12 @@ jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
 		name:      "Test '${{github.ref_name}}'"
-		steps:     #Dry.prepare_venv_steps + [ // look in `dry.cue` for the #Dry namespace ...
-				{
-				run: "make unit"
-			}, {
-				run: "make integration"
-			},
-		]
+		steps:     #Dry.prepare_venv_steps + // look in `dry.cue` for the #Dry namespace ...
+			[
+				{run: "make unit"},
+				{run: "make coverage"},
+				{run: "make integration"},
+			]
 	}
 	deploy: {
 		needs:     "test"
