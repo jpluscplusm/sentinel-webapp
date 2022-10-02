@@ -30,5 +30,8 @@ regression: ## run the regression tests against a running server
 integration: ## run the integration tests
 	$(POETRY) pytest tests/test_integration.py
 
+update_ci_workflows: ## validate and update CI workflow definitions
+	$(MAKE) -C .github/workflows update-all-workflows
+
 help: ## show this help
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
