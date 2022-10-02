@@ -10,7 +10,7 @@ _python_version: string @tag(python_version)
 jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
-		name:      "Unit & integration test branch '${{github.ref_name}}'"
+		name:      "Test '${{github.ref_name}}'"
 		steps: [
 			{
 				uses: "actions/checkout@v3"
@@ -35,14 +35,14 @@ jobs: {
 	deploy: {
 		"runs-on": "ubuntu-latest"
 		needs:     "test"
-		name:      "Deploy branch '${{github.ref_name}}' to Heroku"
+		name:      "Deploy '${{github.ref_name}}' to Heroku"
 		steps: [
 			{
 				uses: "actions/checkout@v3"
 				with: "fetch-depth": 0
 			}, {
 				name:  "git push to heroku"
-				shell: "bash"
+				shell: "bash" // specify this in case GHA ever changes to directly exec'ing if it sees a single-command "run" string
 				env: {
 					HEROKU_USERNAME:  "${{ secrets.HEROKU_USERNAME }}"
 					HEROKU_API_TOKEN: "${{ secrets.HEROKU_API_TOKEN }}"
