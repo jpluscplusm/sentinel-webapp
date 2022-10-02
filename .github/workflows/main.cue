@@ -54,7 +54,7 @@ jobs: {
 	regression_test_deployed_main: {
 		needs:     "deploy"
 		"runs-on": "ubuntu-latest"
-		name:      "Regression test '${{github.ref_name}}' on Heroku"
+		name:      "Regression test '${{github.ref_name}}' deployment"
 		steps: [
 			{
 				uses: "actions/checkout@v3"
@@ -69,6 +69,45 @@ jobs: {
 				}
 			}, {
 				env: BASE_URL: "https://st1-app-main.herokuapp.com"
+				run: "make regression"
+			},
+		]
+	}
+	promote_main_to_staging: {
+		needs:     "regression_test_deployed_main"
+		"runs-on": "ubuntu-latest"
+		name:      "Promote '${{github.ref_name}}' to Staging"
+		steps: [
+			{
+				uses: "actions/checkout@v3"
+			}, {
+				name: "Put Heroku username in ~/.netrc"
+				env: HEROKU_USERNAME: "${{ secrets.HEROKU_USERNAME }}"
+				run: #"printf "machine api.heroku.com login %s" "$HEROKU_USERNAME" >> $HOME/.netrc"#
+			}, {
+				env: HEROKU_API_KEY: "${{ secrets.HEROKU_API_TOKEN }}"
+				run: "heroku pipelines:promote -a st1-app-main"
+			},
+		]
+	}
+	regression_test_deployed_staging: {
+		needs:     "promote_main_to_staging"
+		"runs-on": "ubuntu-latest"
+		name:      "Regression test Staging deployment"
+		steps: [
+			{
+				uses: "actions/checkout@v3"
+			}, {
+				name: "Install poetry"
+				run:  "pipx install poetry"
+			}, {
+				uses: "actions/setup-python@v4"
+				with: {
+					"python-version": _python_version
+					cache:            "poetry"
+				}
+			}, {
+				env: BASE_URL: "https://st1-app-staging.herokuapp.com"
 				run: "make regression"
 			},
 		]
