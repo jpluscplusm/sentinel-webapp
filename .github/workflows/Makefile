@@ -1,7 +1,7 @@
 DEFAULT: help
 .PHONY: update-all-workflows help
 
-ALL_WORKFLOWS = main.yml
+ALL_WORKFLOWS = main.yml production.yml
 # As /awful/ as this next line is, it's copied verbatim from the poetry Heroku buildpack compile script at
 #   https://github.com/moneymeets/python-poetry-buildpack/blob/master/bin/compile#L85.
 # So long as we're using this buildpack, we might as well steal their awfulness
