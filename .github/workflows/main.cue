@@ -33,8 +33,8 @@ jobs: {
 		]
 	}
 	deploy: {
-		"runs-on": "ubuntu-latest"
 		needs:     "test"
+		"runs-on": "ubuntu-latest"
 		name:      "Deploy '${{github.ref_name}}' to Heroku"
 		steps: [
 			{
@@ -48,6 +48,28 @@ jobs: {
 					HEROKU_API_TOKEN: "${{ secrets.HEROKU_API_TOKEN }}"
 				}
 				run: "git push --repo=https://$HEROKU_USERNAME:$HEROKU_API_TOKEN@git.heroku.com/st1-app-main.git --force"
+			},
+		]
+	}
+	regression_test_deployed_main: {
+		needs:     "deploy"
+		"runs-on": "ubuntu-latest"
+		name:      "Regression test '${{github.ref_name}}' on Heroku"
+		steps: [
+			{
+				uses: "actions/checkout@v3"
+			}, {
+				name: "Install poetry"
+				run:  "pipx install poetry"
+			}, {
+				uses: "actions/setup-python@v4"
+				with: {
+					"python-version": _python_version
+					cache:            "poetry"
+				}
+			}, {
+				env: BASE_URL: "https://st1-app-main.herokuapp.com"
+				run: "make regression"
 			},
 		]
 	}

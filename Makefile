@@ -23,7 +23,7 @@ coverage: ## run the unit tests, writing test coverage out to .coverage, and ass
 	$(POETRY) coverage run -m pytest tests/test_unit.py
 	$(POETRY) coverage report --fail-under 90
 
-regression: BASE_URL ?= http://localhost:$(PORT)
+regression: export BASE_URL ?= http://localhost:$(PORT)
 regression: ## run the regression tests against a running server
 	$(POETRY) pytest tests/test_regression.py
 
