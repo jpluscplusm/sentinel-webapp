@@ -11,23 +11,24 @@ PYTHON_VERSION = $(shell cd $$(git rev-parse --show-toplevel) && $(PYTHON_RUNTIM
 
 update-all-workflows: $(ALL_WORKFLOWS) ## regenerate all workflow .yml files from .cue sources
 
-%.yml: github-workflow.cue %.cue
+%.yml: spec/github-workflow.cue %.cue
 	cue vet --concrete \
 		--inject "python_version=$(PYTHON_VERSION)" \
-		$*.cue \
-		github-workflow.cue
+		spec/github-workflow.cue dry.cue \
+		$*.cue
 	cue export --force \
 		--inject "python_version=$(PYTHON_VERSION)" \
 		--out yaml \
 		--outfile $*.yml \
+		dry.cue \
 		$*.cue
 
-.PHONY: github-workflow.json
-github-workflow.json: ## download schemastore's github-workflow schema
-	wget --timestamping --no-verbose https://json.schemastore.org/github-workflow.json
+.PHONY: spec/github-workflow.json
+spec/github-workflow.json: ## download schemastore's github-workflow schema
+	wget --timestamping --no-verbose --directory-prefix=spec https://json.schemastore.org/github-workflow.json
 
-github-workflow.cue: github-workflow.json ## import upstream JSON schema into CUE
-	cue import --force github-workflow.json
+spec/github-workflow.cue: spec/github-workflow.json ## import upstream JSON schema into CUE
+	cue import --force spec/github-workflow.json --outfile spec/github-workflow.cue
 
 help: ## show this help
 	@egrep -h '\s##\s' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
