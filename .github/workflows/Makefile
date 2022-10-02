@@ -2,14 +2,17 @@ DEFAULT: help
 .PHONY: update-all-workflows help
 
 ALL_WORKFLOWS = main.yml
+PYTHON_VERSION = $(shell cat $$(git rev-parse --show-toplevel)/.python-version)
 
 update-all-workflows: $(ALL_WORKFLOWS) ## regenerate all workflow .yml files from .cue sources
 
 %.yml: github-workflow.cue %.cue
 	cue vet --concrete \
+		--inject "python_version=$(PYTHON_VERSION)" \
 		$*.cue \
 		github-workflow.cue
 	cue export --force \
+		--inject "python_version=$(PYTHON_VERSION)" \
 		--out yaml \
 		--outfile $*.yml \
 		$*.cue

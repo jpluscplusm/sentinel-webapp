@@ -5,6 +5,8 @@ on: {
 	pull_request: branches: [ "main"]
 }
 
+_python_version: string @tag(python_version)
+
 jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
@@ -17,7 +19,7 @@ jobs: {
 			}, {
 				uses: "actions/setup-python@v4"
 				with: {
-					"python-version": 3.10
+					"python-version": _python_version
 					cache:            "poetry"
 				}
 			}, {
