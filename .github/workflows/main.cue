@@ -1,4 +1,4 @@
-name: "test-main-on-new-commit"
+name: "Test, deploy, and promote main on each push"
 
 on: {
 	push: branches: [ "main"]
@@ -51,7 +51,7 @@ jobs: {
 			},
 		]
 	}
-	regression_test_deployed_main: {
+	regression_test_main: {
 		needs:     "deploy"
 		"runs-on": "ubuntu-latest"
 		name:      "Regression test '${{github.ref_name}}' deployment"
@@ -73,8 +73,8 @@ jobs: {
 			},
 		]
 	}
-	promote_main_to_staging: {
-		needs:     "regression_test_deployed_main"
+	promote_to_staging: {
+		needs:     "regression_test_main"
 		"runs-on": "ubuntu-latest"
 		name:      "Promote '${{github.ref_name}}' to Staging"
 		steps: [
@@ -90,8 +90,8 @@ jobs: {
 			},
 		]
 	}
-	regression_test_deployed_staging: {
-		needs:     "promote_main_to_staging"
+	regression_test_staging: {
+		needs:     "promote_to_staging"
 		"runs-on": "ubuntu-latest"
 		name:      "Regression test Staging deployment"
 		steps: [

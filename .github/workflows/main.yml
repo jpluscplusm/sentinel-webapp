@@ -1,4 +1,4 @@
-name: test-main-on-new-commit
+name: Test, deploy, and promote main on each push
 "on":
   push:
     branches:
@@ -35,7 +35,7 @@ jobs:
           HEROKU_USERNAME: ${{ secrets.HEROKU_USERNAME }}
           HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
         run: git push --repo=https://$HEROKU_USERNAME:$HEROKU_API_TOKEN@git.heroku.com/st1-app-main.git --force
-  regression_test_deployed_main:
+  regression_test_main:
     needs: deploy
     runs-on: ubuntu-latest
     name: Regression test '${{github.ref_name}}' deployment
@@ -50,8 +50,8 @@ jobs:
       - env:
           BASE_URL: https://st1-app-main.herokuapp.com
         run: make regression
-  promote_main_to_staging:
-    needs: regression_test_deployed_main
+  promote_to_staging:
+    needs: regression_test_main
     runs-on: ubuntu-latest
     name: Promote '${{github.ref_name}}' to Staging
     steps:
@@ -63,8 +63,8 @@ jobs:
       - env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_TOKEN }}
         run: heroku pipelines:promote -a st1-app-main
-  regression_test_deployed_staging:
-    needs: promote_main_to_staging
+  regression_test_staging:
+    needs: promote_to_staging
     runs-on: ubuntu-latest
     name: Regression test Staging deployment
     steps:
