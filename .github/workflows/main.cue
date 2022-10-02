@@ -32,4 +32,17 @@ jobs: {
 			},
 		]
 	}
+	deploy: {
+		"runs-on": "ubuntu-latest"
+		needs:     "test"
+		name:      "Deploy branch '${{github.ref_name}}' to Heroku"
+		steps: [
+			{
+				uses: "actions/checkout@v3"
+			}, {
+				name: "git push to heroku"
+				run:  "git push --repo=https://${{ secrets.HEROKU_USERNAME }}:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/st1-app-main.git --force"
+			},
+		]
+	}
 }
