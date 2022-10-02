@@ -11,7 +11,7 @@ jobs: {
 	test: {
 		"runs-on": "ubuntu-latest"
 		name:      "Test '${{github.ref_name}}'"
-		steps:     #Dry.prepare_venv_steps + [
+		steps:     #Dry.prepare_venv_steps + [ // look in `dry.cue` for the #Dry namespace ...
 				{
 				run: "make unit"
 			}, {

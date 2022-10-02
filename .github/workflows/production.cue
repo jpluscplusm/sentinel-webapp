@@ -4,7 +4,7 @@ name: "Regression test the Production deployment"
 
 on: {
 	schedule: [ {
-		cron: "*/5 * * * *"
+		cron: "19 9-17 * * *" // 19 minutes past the hour, between 9am and 5 pm
 	}]
 }
 

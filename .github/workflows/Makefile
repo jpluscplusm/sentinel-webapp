@@ -25,9 +25,13 @@ update-all-workflows: $(ALL_WORKFLOWS) ## regenerate all workflow .yml files fro
 
 .PHONY: spec/github-workflow.json
 spec/github-workflow.json: ## download schemastore's github-workflow schema
-	wget --timestamping --no-verbose --directory-prefix=spec https://json.schemastore.org/github-workflow.json
+	wget --no-clobber --directory-prefix=spec https://json.schemastore.org/github-workflow.json
 
-spec/github-workflow.cue: spec/github-workflow.json ## import upstream JSON schema into CUE
+# We deliberately don't declare a dependency on the schema JSON from the CUE.
+# This is so the .json can be PHONY, but the happy-path of workflow .yml
+# creation from .cue doesn't need to involve a network trip for the
+# usually-unchanged .json. Make! ¯\_(ツ)_/¯
+spec/github-workflow.cue: ## import upstream JSON schema into CUE
 	cue import --force spec/github-workflow.json --outfile spec/github-workflow.cue
 
 help: ## show this help
