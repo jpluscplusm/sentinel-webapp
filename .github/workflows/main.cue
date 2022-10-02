@@ -41,8 +41,13 @@ jobs: {
 				uses: "actions/checkout@v3"
 				with: "fetch-depth": 0
 			}, {
-				name: "git push to heroku"
-				run:  "git push --repo=https://${{ secrets.HEROKU_USERNAME }}:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/st1-app-main.git --force"
+				name:  "git push to heroku"
+				shell: "bash"
+				env: {
+					HEROKU_USERNAME:  "${{ secrets.HEROKU_USERNAME }}"
+					HEROKU_API_TOKEN: "${{ secrets.HEROKU_API_TOKEN }}"
+				}
+				run: "git push --repo=https://$HEROKU_USERNAME:$HEROKU_API_TOKEN@git.heroku.com/st1-app-main.git --force"
 			},
 		]
 	}
