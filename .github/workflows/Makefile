@@ -11,7 +11,7 @@ PYTHON_VERSION = $(shell cd $$(git rev-parse --show-toplevel) && $(PYTHON_RUNTIM
 
 update-all-workflows: $(ALL_WORKFLOWS) ## regenerate all workflow .yml files from .cue sources
 
-%.yml: spec/github-workflow.cue %.cue
+%.yml: spec/github-workflow.cue dry.cue %.cue
 	cue vet --concrete \
 		--inject "python_version=$(PYTHON_VERSION)" \
 		spec/github-workflow.cue dry.cue \
